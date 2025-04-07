@@ -6,8 +6,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background: #fff; margin-bottom: 10px; }
     .message { margin-bottom: 5px; }
     .name { font-weight: bold; color: #0066cc; }
     input, button { padding: 5px; font-size: 14px; }
@@ -20,9 +20,6 @@
 <div id="chat"></div>
 <input type="text" id="message" placeholder="Type a message">
 <button onclick="sendMessage()">Send</button>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -38,17 +35,12 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
-</script>
-
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
 
   const chatBox = document.getElementById('chat');
   const msgInput = document.getElementById('message');
   const usernameInput = document.getElementById('username');
 
-  // Listen for new messages
+  // Show incoming messages
   db.ref('messages').on('child_added', snapshot => {
     const msg = snapshot.val();
     const div = document.createElement('div');
@@ -58,7 +50,6 @@
     chatBox.scrollTop = chatBox.scrollHeight;
   });
 
-  // Send message
   function sendMessage() {
     const name = usernameInput.value.trim();
     const text = msgInput.value.trim();
