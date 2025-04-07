@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Group Chat</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px; }
+    .message { margin-bottom: 5px; }
+    .name { font-weight: bold; color: #0066cc; }
+    input, button { padding: 5px; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<h2>🔥 Live Group Chat</h2>
+<input type="text" id="username" placeholder="Enter your name">
+<div id="chat"></div>
+<input type="text" id="message" placeholder="Type a message">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+  // 🔥 Replace this with your Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const chatBox = document.getElementById('chat');
+  const msgInput = document.getElementById('message');
+  const usernameInput = document.getElementById('username');
+
+  // Listen for new messages
+  db.ref('messages').on('child_added', snapshot => {
+    const msg = snapshot.val();
+    const div = document.createElement('div');
+    div.classList.add('message');
+    div.innerHTML = `<span class="name">${msg.name}:</span> ${msg.text}`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  // Send message
+  function sendMessage() {
+    const name = usernameInput.value.trim();
+    const text = msgInput.value.trim();
+    if (!name || !text) return;
+    db.ref('messages').push({ name, text });
+    msgInput.value = '';
+  }
+</script>
+
+</body>
+</html>
