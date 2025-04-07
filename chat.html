@@ -21,17 +21,25 @@
 <input type="text" id="message" placeholder="Type a message">
 <button onclick="sendMessage()">Send</button>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
 <script>
-  // 🔥 Replace this with your Firebase config
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDf-Qc9nW8YfujTfoUcEFWavknd-5gc9Lw",
+    authDomain: "chatapp-530cc.firebaseapp.com",
+    databaseURL: "https://chatapp-530cc-default-rtdb.firebaseio.com",
+    projectId: "chatapp-530cc",
+    storageBucket: "chatapp-530cc.appspot.com",
+    messagingSenderId: "78765808323",
+    appId: "1:78765808323:web:e0353522444f6dd7bda076",
+    measurementId: "G-1P24RK8K10"
   };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
