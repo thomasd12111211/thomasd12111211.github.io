@@ -112,14 +112,49 @@
     msgInput.value = '';
   }
 
-  function clearChat() {
-    const password = prompt("Enter admin password to clear the chat:");
+  async function clearChat() {
+    const password = await promptPassword("Enter admin password to clear the chat:");
     if (password === "admin123") {
       db.ref('messages').remove();
       chatBox.innerHTML = '';
     } else if (password) {
       alert("Incorrect password.");
     }
+  }
+
+  function promptPassword(message) {
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.placeholder = message;
+
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(input);
+
+    const dialog = document.createElement('dialog');
+    dialog.appendChild(wrapper);
+
+    const okButton = document.createElement('button');
+    okButton.textContent = 'OK';
+    okButton.onclick = () => dialog.close();
+    wrapper.appendChild(okButton);
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.onclick = () => {
+      input.value = null;
+      dialog.close();
+    };
+    wrapper.appendChild(cancelButton);
+
+    document.body.appendChild(dialog);
+    dialog.showModal();
+
+    return new Promise((resolve) => {
+      dialog.onclose = () => {
+        resolve(input.value);
+        document.body.removeChild(dialog);
+      };
+    });
   }
 </script>
 
