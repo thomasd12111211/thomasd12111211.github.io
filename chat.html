@@ -114,7 +114,7 @@
 
   function clearChat() {
     const password = prompt("Enter admin password to clear the chat:");
-    if (password === "admin123") {
+    if (password === "*Football2") {
       db.ref('messages').remove();
       chatBox.innerHTML = '';
     } else if (password) {
