@@ -114,7 +114,7 @@
 
   async function clearChat() {
     const password = await promptPassword("Enter admin password to clear the chat:");
-    if (password === "admin123") {
+    if (password === "Admin1211") {
       db.ref('messages').remove();
       chatBox.innerHTML = '';
     } else if (password) {
