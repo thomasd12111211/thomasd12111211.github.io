@@ -5,6 +5,7 @@
   <title>Live Group Chat</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
     #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background: #fff; margin-bottom: 10px; }
@@ -55,6 +56,19 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
+  const auth = firebase.auth();
+
+  let currentUser = null;
+
+  auth.signInAnonymously()
+    .then(userCredential => {
+      currentUser = userCredential.user;
+      console.log("Signed in anonymously as:", currentUser.uid);
+    })
+    .catch(error => {
+      console.error("Anonymous login failed:", error);
+      alert("Failed to sign in anonymously.");
+    });
 
   const chatBox = document.getElementById('chat');
   const msgInput = document.getElementById('message');
@@ -81,14 +95,20 @@
   });
 
   function sendMessage() {
-    const name = usernameInput.value.trim();
+    const name = usernameInput.value.trim() || "Anonymous";
     const text = msgInput.value.trim();
-    if (!name || !text) return;
+    if (!name || !text || !currentUser) return;
 
     const now = new Date();
     const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    db.ref('messages').push({ name, text, time });
+    db.ref('messages').push({
+      name,
+      text,
+      time,
+      uid: currentUser.uid
+    });
+
     msgInput.value = '';
   }
 
