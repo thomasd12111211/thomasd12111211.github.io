@@ -1,7 +1,29 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
+<head>
+    <title>Button Image Display</title>
+    <style>
+        #image-container {
+            display: none; /* Initially hide the image */
+            margin-top: 20px;
+        }
+        img {
+            width: 500px;
+            height: 600px;
+        }
+    </style>
+</head>
 <body>
-<h1>hopefully theres a button underneath this</h1>
-<button type="button" img src="https://thomasd12111211.github.io/IMG_1071.png" alt="idk" width="500" height="600"><Click Me!></button>
+    <h1>Hopefully there's a button underneath this</h1>
+    <button type="button" id="show-image-button">Click Me!</button>
+    <div id="image-container">
+        <img src="https://thomasd12111211.github.io/IMG_1071.png" alt="Displayed Image">
+    </div>
+
+    <script>
+        document.getElementById("show-image-button").addEventListener("click", function() {
+            document.getElementById("image-container").style.display = "block";
+        });
+    </script>
 </body>
 </html>
