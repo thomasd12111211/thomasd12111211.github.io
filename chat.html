@@ -95,7 +95,7 @@
   });
 
   function sendMessage() {
-    const name = usernameInput.value.trim() || "Anonymous";
+    const name = usernameInput.value.trim() || return;
     const text = msgInput.value.trim();
     if (!name || !text || !currentUser) return;
 
