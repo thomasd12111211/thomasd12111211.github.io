@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Group Chat1</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background: #fff; margin-bottom: 10px; }
+    .message { display: flex; align-items: center; margin-bottom: 8px; }
+    .avatar {
+      background-color: #007bff;
+      color: white;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    .msg-content {
+      background: #f0f0f0;
+      padding: 6px 10px;
+      border-radius: 6px;
+      max-width: 70%;
+    }
+    .name { font-weight: bold; color: #0066cc; }
+    .time { font-size: 12px; color: #888; margin-left: 6px; }
+    input, button { padding: 5px; font-size: 14px; margin-right: 5px; }
+  </style>
+</head>
+<body>
 
+<h2 style="color:#17ed0c;">Live Group Chat1</h2>
+<input type="text" id="username" placeholder="Enter your name">
+<div id="chat"></div>
+<input type="text" id="message" placeholder="Type a message">
+<button onclick="sendMessage()">Send</button>
+<button onclick="clearChat()" style="background-color: red; color: white;">Clear Chat</button>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDf-Qc9nW8YfujTfoUcEFWavknd-5gc9Lw",
+    authDomain: "chatapp-530cc.firebaseapp.com",
+    databaseURL: "https://chatapp-530cc-default-rtdb.firebaseio.com",
+    projectId: "chatapp-530cc",
+    storageBucket: "chatapp-530cc.appspot.com",
+    messagingSenderId: "78765808323",
+    appId: "1:78765808323:web:e0353522444f6dd7bda076",
+    measurementId: "G-1P24RK8K10"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const auth = firebase.auth();
+
+  let currentUser = null;
+
+  auth.signInAnonymously()
+    .then(userCredential => {
+      currentUser = userCredential.user;
+      console.log("Signed in anonymously as:", currentUser.uid);
+    })
+    .catch(error => {
+      console.error("Anonymous login failed:", error);
+      alert("Failed to sign in anonymously.");
+    });
+
+  const chatBox = document.getElementById('chat');
+  const msgInput = document.getElementById('message');
+  const usernameInput = document.getElementById('username');
+
+  // Show incoming messages
+  db.ref('messages').on('child_added', snapshot => {
+    const msg = snapshot.val();
+    const div = document.createElement('div');
+    div.classList.add('message');
+
+    const initials = msg.name.trim().charAt(0).toUpperCase();
+
+    div.innerHTML = `
+      <div class="avatar">${initials}</div>
+      <div class="msg-content">
+        <span class="name">${msg.name}</span>
+        <span class="time">(${msg.time})</span><br>
+        ${msg.text}
+      </div>
+    `;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  function sendMessage() {
+    const name = usernameInput.value.trim() || "Anonymous";
+    const text = msgInput.value.trim();
+    if (!name || !text || !currentUser) return;
+    const now = new Date();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    db.ref('messages').push({
+      name,
+      text,
+      time,
+      uid: currentUser.uid
+    });
+
+    msgInput.value = '';
+  }
+
+  async function clearChat() {
+    const password = await promptPassword("Enter admin password to clear the chat:");
+    if (password === "1107" || password === "1211") {
+      db.ref('messages').remove();
+      chatBox.innerHTML = '';
+    } else if (password) {
+      alert("(Your A Pessnt 🤣)");
+    }
+  }
+
+  function promptPassword(message) {
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.placeholder = message;
+
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(input);
+
+    const dialog = document.createElement('dialog');
+    dialog.appendChild(wrapper);
+
+    const okButton = document.createElement('button');
+    okButton.textContent = 'OK';
+    okButton.onclick = () => dialog.close();
+    wrapper.appendChild(okButton);
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.onclick = () => {
+      input.value = null;
+      dialog.close();
+    };
+    wrapper.appendChild(cancelButton);
+
+    document.body.appendChild(dialog);
+    dialog.showModal();
+
+    return new Promise((resolve) => {
+      dialog.onclose = () => {
+        resolve(input.value);
+        document.body.removeChild(dialog);
+      };
+    });
+  }
+</script>
+<a href="https://thomas12111211.github.io/Chat2.html">press this to go to chat 2</a>
+</body>
+  
+</html>
